@@ -230,8 +230,10 @@ Enter your selection [1-5]:
 ---
 
 ## 9. Author & Academic Details
-- **Course**: Programming in Java
+- **Student Name**: Jayant Yadav
+- **Register Number**: 25BAI11172
+- **Degree & Branch**: B.Tech (CSE / AI & ML)
+- **Institution**: Vellore Institute of Technology (VIT)
+- **Course**: CSE1007 - Programming in Java
 - **Evaluation Type**: Flipped Course Project Evaluation (VITyarthi)
 - **Project Title**: Smart Inventory & Billing Manager for Retail
-- **Name**: Jayant Yadav
-- **Registration Number**: 25BAI11172

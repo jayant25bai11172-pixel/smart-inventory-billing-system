@@ -1,5 +1,10 @@
 # Project Statement: Smart Inventory & Billing Manager for Retail
 
+- **Student Name**: Jayant Yadav
+- **Register Number**: 25BAI11172
+- **Course**: CSE1007 - Programming in Java
+- **Evaluation**: VITyarthi Flipped Course Evaluation
+
 ## 1. Problem Statement
 Small and medium retail establishments (such as neighborhood grocery stores, mini-marts, and boutique shops) frequently face operational bottlenecks due to manual inventory registers, disjointed checkout calculators, and lack of real-time visibility into stock depletion. Crucial problems include:
 - **Stockouts and Revenue Loss**: Fast-moving consumer goods often go out of stock without prior notification, causing lost sales and dissatisfied customers.

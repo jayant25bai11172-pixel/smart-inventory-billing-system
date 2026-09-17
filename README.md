@@ -9,16 +9,7 @@ An enterprise-grade, standalone Java retail management system designed for small
 
 ---
 
-## Table of Contents
-1. [Overview](#overview)
-2. [Key Features](#key-features)
-3. [Core Java Concepts Highlighted](#core-java-concepts-highlighted)
-4. [Architecture & Project Structure](#architecture--project-structure)
-5. [Prerequisites & Installation](#prerequisites--installation)
-6. [Compilation & Execution](#compilation--execution)
-7. [Testing Instructions](#testing-instructions)
-8. [Sample CLI Outputs & Demo Walkthrough](#sample-cli-outputs--demo-walkthrough)
-9. [Author & Academic Details](#author--academic-details)
+
 
 ---
 
@@ -242,3 +233,5 @@ Enter your selection [1-5]:
 - **Course**: Programming in Java
 - **Evaluation Type**: Flipped Course Project Evaluation (VITyarthi)
 - **Project Title**: Smart Inventory & Billing Manager for Retail
+- **Name**: Jayant Yadav
+- **Registration Number**: 25BAI11172

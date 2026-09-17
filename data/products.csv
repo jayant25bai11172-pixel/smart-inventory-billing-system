@@ -1,0 +1,15 @@
+# ID,Name,Category,Price,StockQuantity,LowStockThreshold
+PRD-101,Basmati Rice 5kg,Groceries,450.00,25,5
+PRD-112,Herbal Aloe Shampoo 300ml,Personal Care,225.00,14,5
+PRD-111,Salted Roasted Almonds 200g,Snacks,290.00,8,5
+PRD-110,Dark Chocolate Cookie 150g,Snacks,75.00,35,10
+PRD-105,Farm Fresh Butter 200g,Dairy,115.00,4,5
+PRD-104,Full Cream Milk 1L,Dairy,68.00,12,6
+PRD-103,Sunflower Oil 1L,Groceries,145.00,18,5
+PRD-114,Sparkle Dental Paste 150g,Personal Care,95.00,2,5
+PRD-102,Whole Wheat Flour 5kg,Groceries,280.00,30,8
+PRD-113,Antibacterial Hand Soap 250ml,Personal Care,85.00,20,6
+PRD-109,Sparkling Lemon Soda 600ml,Beverages,45.00,40,10
+PRD-108,Instant Arabica Coffee 100g,Beverages,320.00,3,5
+PRD-107,Organic Green Tea 25s,Beverages,199.00,22,5
+PRD-106,Cheddar Cheese 200g,Dairy,160.00,15,4

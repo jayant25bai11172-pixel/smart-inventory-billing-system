@@ -519,9 +519,9 @@ The project adheres to a comprehensive validation approach combining automated u
 1. **Thread-Safe Synchronization Across Operations**:
    - *Challenge*: Simultaneous reading by the background daemon thread and writing during checkout could trigger `ConcurrentModificationException` or inconsistent inventory counts.
    - *Solution*: Utilized `ConcurrentHashMap`, thread-safe `CopyOnWriteArrayList`, synchronized stock deduction blocks, and `ReentrantReadWriteLock` for CSV disk persistence.
-2. **Cross-Platform Console Formatting**:
-   - *Challenge*: Default terminals vary in ANSI color support and tabular alignment.
-   - *Solution*: Developed `TableFormatter` which dynamically calculates column widths based on cell text lengths, ensuring clean ASCII table rendering on all platforms.
+2. **Windows Terminal & Console Formatted Display**:
+   - *Challenge*: Default Windows command prompt and terminal windows can misalign columns when printing variable-length strings.
+   - *Solution*: Developed `TableFormatter` which dynamically calculates column widths based on cell text lengths and renders structured ASCII borders for clean alignment in Windows Command Prompt and PowerShell.
 3. **Atomic Rollback on Failed Payment**:
    - *Challenge*: If inventory were decremented before payment succeeded, a failed payment could cause inventory to be lost.
    - *Solution*: Designed the checkout workflow to perform stock deductions strictly **after** the polymorphic `processPayment()` succeeds.

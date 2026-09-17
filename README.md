@@ -116,35 +116,29 @@ smart-inventory-billing-manager/
 ## 5. Prerequisites & Installation
 
 ### Requirements
-- **Java Development Kit (JDK)**: JDK 17 or JDK 21+ installed and accessible via `PATH` or configured under `JAVA_HOME`.
-- **Operating System**: Windows, Linux, or macOS.
+- **Operating System**: Microsoft Windows 10 / Windows 11 (64-bit).
+- **Java Development Kit (JDK)**: JDK 17 or JDK 21+ (configured in `PATH` or `JAVA_HOME`).
 
-### Clone or Setup
-Ensure the project files are located in your workspace directory:
-```bash
-cd smart-inventory-billing-manager
+### Setup
+Navigate to the project directory in Command Prompt or PowerShell:
+```cmd
+cd C:\Users\jayan\.gemini\antigravity\scratch\smart-inventory-billing-manager
 ```
 
 ---
 
-## 6. Compilation & Execution
+## 6. Compilation & Execution (Windows)
 
-### On Windows
-To compile the entire codebase:
+### Compile the Codebase
+Run the Windows batch build script:
 ```cmd
-build.bat
+.\build.bat
 ```
 
-To run the interactive retail manager:
+### Run the Interactive Application
+Launch the retail management system:
 ```cmd
-run.bat
-```
-
-### On Linux / macOS
-```bash
-mkdir -p bin
-javac -d bin -encoding UTF-8 $(find src -name "*.java")
-java -cp bin com.retail.inventory.Main
+.\run.bat
 ```
 
 ---

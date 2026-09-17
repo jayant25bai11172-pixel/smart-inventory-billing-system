@@ -56,3 +56,4 @@ The application serves as a standalone Point of Sale (POS) and inventory trackin
 | **FEAT-06** | **Multithreaded Stock Alert Daemon** | Background daemon thread periodically scanning SKU stock levels and triggering live warnings when thresholds are breached. |
 | **FEAT-07** | **Executive Sales Analytics** | Calculation of Gross Revenue, Average Order Value, Top 5 Bestselling Products, and Category Revenue shares using Java Streams. |
 | **FEAT-08** | **Persistent CSV Data Storage** | Thread-safe CSV read/write repositories maintaining data durability across application lifecycles without external database dependencies. |
+    

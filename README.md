@@ -235,5 +235,4 @@ Enter your selection [1-5]:
 - **Degree & Branch**: B.Tech (CSE / AI & ML)
 - **Institution**: Vellore Institute of Technology (VIT)
 - **Course**: CSE1007 - Programming in Java
-- **Evaluation Type**: Flipped Course Project Evaluation (VITyarthi)
 - **Project Title**: Smart Inventory & Billing Manager for Retail

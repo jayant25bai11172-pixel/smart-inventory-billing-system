@@ -1,6 +1,6 @@
 # Smart Retail - Inventory & Billing Manager
 
-![Version](https://img.shields.io/badge/Release-v2.0.0-blue.svg)
+![Version](https://img.shields.io/badge/Release-v1.0.0-blue.svg)
 ![Java](https://img.shields.io/badge/Language-Java%2021%20LTS-orange.svg)
 ![UI](https://img.shields.io/badge/Interface-JavaFX%20Desktop%20GUI-brightgreen.svg)
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)

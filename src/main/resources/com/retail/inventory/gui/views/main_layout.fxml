@@ -7,9 +7,9 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.retail.inventory.gui.controller.MainController"
-            prefHeight="760.0" prefWidth="1200.0" style="-fx-background-color: #F8FAFC;">
+            prefHeight="760.0" prefWidth="1200.0" style="-fx-background-color: #FFFFFF;">
 
-    <!-- Left Sidebar -->
+    <!-- Left Sidebar (All-White Clean Design) -->
     <left>
         <VBox styleClass="sidebar" spacing="12">
             <!-- Brand -->
@@ -34,12 +34,12 @@
             <VBox styleClass="sidebar-footer" spacing="6">
                 <HBox alignment="CENTER_LEFT" spacing="8">
                     <Circle fx:id="circleMonitorStatus" radius="5.0" fill="#10B981"/>
-                    <Label text="Daemon Monitor" style="-fx-font-weight: bold; -fx-text-fill: #F8FAFC; -fx-font-size: 11px;"/>
+                    <Label text="Daemon Monitor" styleClass="sidebar-footer-title"/>
                 </HBox>
-                <Label text="Active background stock scan (5s)" style="-fx-text-fill: #94A3B8; -fx-font-size: 10px;"/>
+                <Label text="Active background stock scan (5s)" styleClass="sidebar-footer-desc"/>
                 <HBox alignment="CENTER_LEFT" spacing="4">
-                    <Label text="Low Stock Items:" style="-fx-text-fill: #CBD5E1; -fx-font-size: 11px;"/>
-                    <Label fx:id="lblSidebarLowStockCount" text="0" style="-fx-font-weight: bold; -fx-text-fill: #F59E0B; -fx-font-size: 11px;"/>
+                    <Label text="Low Stock Items:" styleClass="sidebar-footer-label"/>
+                    <Label fx:id="lblSidebarLowStockCount" text="0" styleClass="sidebar-footer-count"/>
                 </HBox>
             </VBox>
         </VBox>
@@ -47,7 +47,7 @@
 
     <!-- Center Content Area -->
     <center>
-        <BorderPane>
+        <BorderPane style="-fx-background-color: #FFFFFF;">
             <!-- Header Bar -->
             <top>
                 <HBox styleClass="header-bar" spacing="16" alignment="CENTER_LEFT">

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.retail.inventory.gui.controller.PosController"
+      spacing="16" style="-fx-background-color: transparent;">
+
+    <!-- Left 60%: Product Catalog & Search Selection -->
+    <VBox styleClass="card" spacing="12" HBox.hgrow="ALWAYS" prefWidth="620">
+        <!-- Top Search & Categories -->
+        <VBox spacing="10">
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <TextField fx:id="txtSearchProduct" promptText="🔍 Search product by Name or ID..."
+                           styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                <Button text="Clear" styleClass="btn-secondary" onAction="#handleClearSearch"/>
+            </HBox>
+
+            <!-- Category Chips Bar -->
+            <ScrollPane fitToHeight="true" vbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-padding: 2 0 4 0;">
+                <HBox fx:id="boxCategoryChips" spacing="8" alignment="CENTER_LEFT"/>
+            </ScrollPane>
+        </VBox>
+
+        <Separator/>
+
+        <!-- Catalog Product Table -->
+        <TableView fx:id="tableCatalog" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colCatalogId" text="ID" prefWidth="80"/>
+                <TableColumn fx:id="colCatalogName" text="Product Name" prefWidth="180"/>
+                <TableColumn fx:id="colCatalogCategory" text="Category" prefWidth="100"/>
+                <TableColumn fx:id="colCatalogPrice" text="Unit Price" prefWidth="90"/>
+                <TableColumn fx:id="colCatalogStock" text="Stock" prefWidth="70"/>
+                <TableColumn fx:id="colCatalogAction" text="Action" prefWidth="90"/>
+            </columns>
+            <placeholder>
+                <Label text="No matching products found."/>
+            </placeholder>
+        </TableView>
+
+        <!-- Bottom catalog help -->
+        <HBox alignment="CENTER_LEFT" spacing="8">
+            <Label text="💡 Click '+ Add' or double-click any product to add to the active customer cart."
+                   style="-fx-font-size: 11px; -fx-text-fill: #64748B;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Right 40%: Active Cart & Checkout Panel -->
+    <VBox styleClass="card" spacing="12" prefWidth="480">
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT">
+            <VBox HBox.hgrow="ALWAYS">
+                <Label text="Customer Cart" styleClass="card-header-title"/>
+                <Label fx:id="lblCartItemCount" text="0 items in cart" styleClass="card-header-subtitle"/>
+            </VBox>
+            <Button text="🗑️ Clear Cart" styleClass="btn-secondary" onAction="#handleClearCart"/>
+        </HBox>
+
+        <!-- Cart Items Table -->
+        <TableView fx:id="tableCart" VBox.vgrow="ALWAYS" prefHeight="190">
+            <columns>
+                <TableColumn fx:id="colCartItemName" text="Item" prefWidth="140"/>
+                <TableColumn fx:id="colCartItemPrice" text="Rate" prefWidth="70"/>
+                <TableColumn fx:id="colCartItemQty" text="Qty" prefWidth="100"/>
+                <TableColumn fx:id="colCartItemSubtotal" text="Total" prefWidth="80"/>
+                <TableColumn fx:id="colCartItemRemove" text="" prefWidth="40"/>
+            </columns>
+            <placeholder>
+                <Label text="Your cart is currently empty."/>
+            </placeholder>
+        </TableView>
+
+        <!-- Customer Metadata -->
+        <GridPane hgap="8" vgap="6">
+            <Label text="Customer Name:" styleClass="input-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="txtCustomerName" promptText="e.g. Rahul Sharma" text="Walk-in Customer"
+                       GridPane.columnIndex="1" GridPane.rowIndex="0" HBox.hgrow="ALWAYS"/>
+
+            <Label text="Phone Number:" styleClass="input-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="txtCustomerPhone" promptText="e.g. 9876543210" text="9999999999"
+                       GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        </GridPane>
+
+        <!-- Financial Calculation Summary Box -->
+        <VBox styleClass="checkout-box" spacing="6">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Subtotal:" style="-fx-text-fill: #475569; -fx-font-size: 12px;" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Label fx:id="lblSubtotal" text="₹0.00" style="-fx-font-weight: bold;"/>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="6">
+                <Label text="Discount (%):" style="-fx-text-fill: #475569; -fx-font-size: 12px;" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <TextField fx:id="txtDiscountPct" text="0" prefWidth="60" alignment="CENTER_RIGHT"/>
+                <Label fx:id="lblDiscountAmount" text="-₹0.00" style="-fx-font-weight: bold; -fx-text-fill: #10B981;"/>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT">
+                <Label text="GST Tax (5%):" style="-fx-text-fill: #475569; -fx-font-size: 12px;" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Label fx:id="lblTaxAmount" text="₹0.00" style="-fx-font-weight: bold;"/>
+            </HBox>
+
+            <Separator/>
+
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Grand Total:" styleClass="total-label" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Label fx:id="lblGrandTotal" text="₹0.00" styleClass="total-amount"/>
+            </HBox>
+        </VBox>
+
+        <!-- Payment Mode Selection -->
+        <VBox spacing="6">
+            <Label text="Select Payment Method:" styleClass="input-label"/>
+            <HBox spacing="10">
+                <RadioButton fx:id="rbCash" text="💵 Cash" selected="true">
+                    <toggleGroup>
+                        <ToggleGroup fx:id="paymentToggleGroup"/>
+                    </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="rbCard" text="💳 Card" toggleGroup="$paymentToggleGroup"/>
+                <RadioButton fx:id="rbUpi" text="📱 UPI" toggleGroup="$paymentToggleGroup"/>
+            </HBox>
+
+            <!-- Dynamic Payment Input Stack -->
+            <StackPane fx:id="panePaymentInputs" prefHeight="40">
+                <!-- Cash Details -->
+                <HBox fx:id="boxCashInput" spacing="8" alignment="CENTER_LEFT">
+                    <Label text="Tendered:" styleClass="input-label"/>
+                    <TextField fx:id="txtCashTendered" promptText="Amount given" prefWidth="110"/>
+                    <Label text="Change Due:" styleClass="input-label"/>
+                    <Label fx:id="lblChangeDue" text="₹0.00" style="-fx-font-weight: bold; -fx-text-fill: #059669;"/>
+                </HBox>
+
+                <!-- Card Details -->
+                <HBox fx:id="boxCardInput" spacing="8" alignment="CENTER_LEFT" visible="false" managed="false">
+                    <TextField fx:id="txtCardNumber" promptText="16-Digit Card Number" HBox.hgrow="ALWAYS"/>
+                </HBox>
+
+                <!-- UPI Details -->
+                <HBox fx:id="boxUpiInput" spacing="8" alignment="CENTER_LEFT" visible="false" managed="false">
+                    <TextField fx:id="txtUpiId" promptText="UPI Virtual Address (e.g. name@okhdfcbank)" HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </StackPane>
+        </VBox>
+
+        <!-- Action Button -->
+        <Button fx:id="btnCheckout" text="💳 Complete Checkout &amp; Print Bill (F10)"
+                styleClass="btn-success" maxWidth="Infinity" prefHeight="42" onAction="#handleCheckout"/>
+    </VBox>
+
+</HBox>

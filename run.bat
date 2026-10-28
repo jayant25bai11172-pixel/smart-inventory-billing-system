@@ -2,17 +2,25 @@
 setlocal enabledelayedexpansion
 set "PROJECT_DIR=%~dp0"
 
-if exist "%PROJECT_DIR%..\jdk-21\bin\java.exe" (
-    set "JAVA_CMD=%PROJECT_DIR%..\jdk-21\bin\java.exe"
-) else (
-    set "JAVA_CMD=java"
-)
+echo ========================================================
+echo   SmartRetail - Retail Inventory & Billing Suite
+echo ========================================================
+echo.
+echo   [1] Modern Desktop GUI (JavaFX 21 Pro Interface) [Default]
+echo   [2] Classic Terminal Console Mode
+echo.
+echo Auto-launching Modern Desktop GUI in 3 seconds...
+choice /c 12 /t 3 /d 1 /n /m "Press 1 for GUI or 2 for Console [Default: 1]: "
 
-if not exist "%PROJECT_DIR%bin\com\retail\inventory\Main.class" (
-    echo Binaries not found. Building project first...
-    call "%PROJECT_DIR%build.bat"
-    if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
-)
+if errorlevel 2 goto run_console
+goto run_gui
 
-cd /d "%PROJECT_DIR%"
-"%JAVA_CMD%" -cp bin com.retail.inventory.Main
+:run_gui
+call "%PROJECT_DIR%run-gui.bat" %*
+goto end
+
+:run_console
+call "%PROJECT_DIR%run-console.bat" %*
+goto end
+
+:end

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.retail.inventory.gui.controller.AnalyticsController"
+      spacing="16" style="-fx-background-color: transparent;">
+
+    <!-- Top KPI Stat Summary -->
+    <GridPane hgap="16" vgap="16">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="25"/>
+        </columnConstraints>
+
+        <VBox styleClass="kpi-card" GridPane.columnIndex="0" spacing="6">
+            <Label text="TOTAL GROSS REVENUE" styleClass="kpi-title"/>
+            <Label fx:id="lblGrossRevenue" text="₹0.00" styleClass="kpi-value"/>
+            <Label text="All-time accumulated sales" styleClass="kpi-subtitle"/>
+        </VBox>
+
+        <VBox styleClass="kpi-card" GridPane.columnIndex="1" spacing="6">
+            <Label text="TOTAL INVOICES ISSUED" styleClass="kpi-title"/>
+            <Label fx:id="lblInvoicesIssued" text="0" styleClass="kpi-value"/>
+            <Label text="Recorded customer orders" styleClass="kpi-subtitle"/>
+        </VBox>
+
+        <VBox styleClass="kpi-card" GridPane.columnIndex="2" spacing="6">
+            <Label text="TOTAL UNITS SOLD" styleClass="kpi-title"/>
+            <Label fx:id="lblUnitsSold" text="0" styleClass="kpi-value"/>
+            <Label text="Quantity of products sold" styleClass="kpi-subtitle"/>
+        </VBox>
+
+        <VBox styleClass="kpi-card" GridPane.columnIndex="3" spacing="6">
+            <Label text="AVERAGE ORDER VALUE (AOV)" styleClass="kpi-title"/>
+            <Label fx:id="lblAvgOrderValue" text="₹0.00" styleClass="kpi-value" style="-fx-text-fill: #2563EB;"/>
+            <Label text="Mean revenue per transaction" styleClass="kpi-subtitle"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Visual Charts Row -->
+    <HBox spacing="16" prefHeight="280">
+        <!-- Bar Chart: Top Products -->
+        <VBox styleClass="card" spacing="8" HBox.hgrow="ALWAYS" prefWidth="600">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Top Selling Products (by Revenue)" styleClass="card-header-title" HBox.hgrow="ALWAYS"/>
+                <Button text="🔄 Refresh Charts" styleClass="btn-secondary" onAction="#refreshAnalytics"/>
+            </HBox>
+            <BarChart fx:id="chartTopProducts" legendVisible="false" animated="false" VBox.vgrow="ALWAYS">
+                <xAxis>
+                    <CategoryAxis label="Product" side="BOTTOM"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Revenue (₹)" side="LEFT"/>
+                </yAxis>
+            </BarChart>
+        </VBox>
+
+        <!-- Pie Chart: Category Breakdown -->
+        <VBox styleClass="card" spacing="8" prefWidth="420">
+            <Label text="Revenue Share by Category" styleClass="card-header-title"/>
+            <PieChart fx:id="chartCategoryBreakdown" animated="false" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </HBox>
+
+    <!-- Historical Invoices Log Table -->
+    <VBox styleClass="card" spacing="12" VBox.vgrow="ALWAYS">
+        <HBox alignment="CENTER_LEFT">
+            <VBox HBox.hgrow="ALWAYS">
+                <Label text="Invoice Audit Ledger" styleClass="card-header-title"/>
+                <Label text="Complete history of customer billing transactions" styleClass="card-header-subtitle"/>
+            </VBox>
+            <Button text="View Selected Receipt" styleClass="btn-primary" onAction="#handleViewSelectedReceipt"/>
+        </HBox>
+
+        <TableView fx:id="tableInvoices" VBox.vgrow="ALWAYS" prefHeight="200">
+            <columns>
+                <TableColumn fx:id="colInvId" text="Invoice ID" prefWidth="150"/>
+                <TableColumn fx:id="colInvDate" text="Date &amp; Time" prefWidth="160"/>
+                <TableColumn fx:id="colInvCustomer" text="Customer Name" prefWidth="160"/>
+                <TableColumn fx:id="colInvPhone" text="Phone" prefWidth="120"/>
+                <TableColumn fx:id="colInvQty" text="Items Qty" prefWidth="90"/>
+                <TableColumn fx:id="colInvTotal" text="Grand Total (₹)" prefWidth="120"/>
+                <TableColumn fx:id="colInvPayment" text="Payment Mode" prefWidth="120"/>
+                <TableColumn fx:id="colInvAction" text="Action" prefWidth="100"/>
+            </columns>
+            <placeholder>
+                <Label text="No invoices on file yet."/>
+            </placeholder>
+        </TableView>
+    </VBox>
+
+</VBox>

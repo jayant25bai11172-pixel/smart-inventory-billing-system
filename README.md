@@ -120,17 +120,38 @@ cd C:\Users\jayan\.gemini\antigravity\scratch\smart-inventory-billing-manager
 
 ## 6. Compilation & Execution (Windows)
 
+The application supports both a **Modern JavaFX Desktop GUI** and the **Classic Terminal Console Mode**.
+
 ### Compile the Codebase
-Run the Windows batch build script:
+Run the Windows batch build script (automatically fetches OpenJFX libraries if not present and compiles all classes):
 ```cmd
 .\build.bat
 ```
 
-### Run the Interactive Application
-Launch the retail management system:
-```cmd
-.\run.bat
-```
+### Launch the Application
+- **Default Launcher (Interactive Menu)**:
+  ```cmd
+  .\run.bat
+  ```
+  *(Launches the Modern JavaFX Desktop GUI by default after 3 seconds, or press `2` for Terminal Console Mode).*
+
+- **Direct Desktop GUI Launch**:
+  ```cmd
+  .\run-gui.bat
+  ```
+
+- **Direct Classic Console Launch**:
+  ```cmd
+  .\run-console.bat
+  ```
+
+---
+
+### Modern JavaFX Interface Overview
+1. **📊 Executive Dashboard**: High-level store metrics, financial KPIs, low-stock breach warnings, and quick replenishment buttons.
+2. **🛒 POS Billing Register**: Real-time product search, category chips, interactive cart table with quantity steppers, discount calculator, GST tax computation, Cash/Card/UPI payment settlement, and thermal receipt generation.
+3. **📦 Inventory Catalog**: Filterable table by category & stock status (In Stock, Low Stock, Out of Stock), asset valuation footer, product creation, stock restock, price editing, and deletion.
+4. **📈 Analytics & BI**: JavaFX bar charts of top products by revenue/volume, category breakdown pie charts, and full searchable invoice audit ledger with receipt viewing.
 
 ---
 

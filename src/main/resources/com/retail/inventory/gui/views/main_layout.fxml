@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.retail.inventory.gui.controller.MainController"
+            prefHeight="760.0" prefWidth="1200.0" style="-fx-background-color: #F8FAFC;">
+
+    <!-- Left Sidebar -->
+    <left>
+        <VBox styleClass="sidebar" spacing="12">
+            <!-- Brand -->
+            <VBox styleClass="brand-container" spacing="4">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label text="SmartRetail" styleClass="brand-title"/>
+                    <Label text="PRO" styleClass="brand-badge"/>
+                </HBox>
+                <Label text="Retail POS &amp; Inventory Suite" styleClass="brand-subtitle"/>
+            </VBox>
+
+            <!-- Navigation Links -->
+            <VBox spacing="4" VBox.vgrow="ALWAYS">
+                <Label text="NAVIGATION" styleClass="nav-section-title"/>
+                <Button fx:id="btnNavDashboard" text="📊   Dashboard" styleClass="nav-button-active" maxWidth="Infinity" onAction="#handleNavDashboard"/>
+                <Button fx:id="btnNavPos" text="🛒   POS Billing Register" styleClass="nav-button" maxWidth="Infinity" onAction="#handleNavPos"/>
+                <Button fx:id="btnNavInventory" text="📦   Inventory Catalog" styleClass="nav-button" maxWidth="Infinity" onAction="#handleNavInventory"/>
+                <Button fx:id="btnNavAnalytics" text="📈   Analytics &amp; Reports" styleClass="nav-button" maxWidth="Infinity" onAction="#handleNavAnalytics"/>
+            </VBox>
+
+            <!-- Daemon Monitor Status Footer -->
+            <VBox styleClass="sidebar-footer" spacing="6">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Circle fx:id="circleMonitorStatus" radius="5.0" fill="#10B981"/>
+                    <Label text="Daemon Monitor" style="-fx-font-weight: bold; -fx-text-fill: #F8FAFC; -fx-font-size: 11px;"/>
+                </HBox>
+                <Label text="Active background stock scan (5s)" style="-fx-text-fill: #94A3B8; -fx-font-size: 10px;"/>
+                <HBox alignment="CENTER_LEFT" spacing="4">
+                    <Label text="Low Stock Items:" style="-fx-text-fill: #CBD5E1; -fx-font-size: 11px;"/>
+                    <Label fx:id="lblSidebarLowStockCount" text="0" style="-fx-font-weight: bold; -fx-text-fill: #F59E0B; -fx-font-size: 11px;"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- Center Content Area -->
+    <center>
+        <BorderPane>
+            <!-- Header Bar -->
+            <top>
+                <HBox styleClass="header-bar" spacing="16" alignment="CENTER_LEFT">
+                    <VBox HBox.hgrow="ALWAYS">
+                        <Label fx:id="lblHeaderTitle" text="Store Overview &amp; Health" styleClass="page-title"/>
+                        <Label fx:id="lblHeaderSubtitle" text="Live inventory summary and retail metrics" styleClass="page-subtitle"/>
+                    </VBox>
+
+                    <!-- Header Stats & Actions -->
+                    <HBox spacing="12" alignment="CENTER_RIGHT">
+                        <Label text="● System Online" styleClass="system-status-pill"/>
+                        <Label fx:id="lblClock" text="12:00:00 PM" styleClass="header-clock"/>
+                        <Button text="🛒 New Sale (F2)" styleClass="btn-primary" onAction="#handleNavPos"/>
+                    </HBox>
+                </HBox>
+            </top>
+
+            <!-- Dynamic View Container -->
+            <center>
+                <StackPane fx:id="contentArea" styleClass="content-area"/>
+            </center>
+        </BorderPane>
+    </center>
+
+</BorderPane>

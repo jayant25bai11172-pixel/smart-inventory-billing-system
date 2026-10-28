@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.retail.inventory.gui.controller.InventoryController"
+      spacing="16" style="-fx-background-color: transparent;">
+
+    <!-- Control & Filter Bar -->
+    <HBox styleClass="card" spacing="12" alignment="CENTER_LEFT">
+        <!-- Search field -->
+        <TextField fx:id="txtSearch" promptText="🔍 Search by ID or product name..."
+                   styleClass="search-field" prefWidth="280"/>
+
+        <!-- Category Filter -->
+        <Label text="Category:" styleClass="input-label"/>
+        <ComboBox fx:id="cbCategoryFilter" prefWidth="150"/>
+
+        <!-- Stock Status Filter -->
+        <Label text="Status:" styleClass="input-label"/>
+        <ComboBox fx:id="cbStatusFilter" prefWidth="130"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- Action Buttons -->
+        <Button text="➕ Add Product" styleClass="btn-primary" onAction="#handleAddProduct"/>
+        <Button text="🔄 Restock" styleClass="btn-secondary" onAction="#handleRestockSelected"/>
+        <Button text="✏️ Edit" styleClass="btn-secondary" onAction="#handleEditSelected"/>
+        <Button text="🗑️ Delete" styleClass="btn-danger" onAction="#handleDeleteSelected"/>
+    </HBox>
+
+    <!-- Product Inventory Table -->
+    <VBox styleClass="card" spacing="12" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tableInventory" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" text="Product ID" prefWidth="100"/>
+                <TableColumn fx:id="colName" text="Product Name" prefWidth="250"/>
+                <TableColumn fx:id="colCategory" text="Category" prefWidth="130"/>
+                <TableColumn fx:id="colPrice" text="Unit Price (₹)" prefWidth="110"/>
+                <TableColumn fx:id="colStock" text="Stock Quantity" prefWidth="110"/>
+                <TableColumn fx:id="colThreshold" text="Safety Threshold" prefWidth="120"/>
+                <TableColumn fx:id="colStatus" text="Stock Status" prefWidth="120"/>
+                <TableColumn fx:id="colTotalVal" text="Asset Valuation" prefWidth="120"/>
+            </columns>
+            <placeholder>
+                <Label text="No products found matching filters."/>
+            </placeholder>
+        </TableView>
+
+        <!-- Summary Footer -->
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 8 4 4 4;">
+            <Label fx:id="lblInventoryCount" text="Total Products: 0" style="-fx-font-weight: bold; -fx-text-fill: #475569;"/>
+            <Separator orientation="VERTICAL"/>
+            <Label fx:id="lblTotalInventoryValue" text="Total Inventory Valuation: ₹0.00" style="-fx-font-weight: bold; -fx-text-fill: #2563EB;"/>
+            <Separator orientation="VERTICAL"/>
+            <Label fx:id="lblLowStockNotice" text="Low Stock Items: 0" style="-fx-font-weight: bold; -fx-text-fill: #F59E0B;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="🔄 Refresh Catalog" styleClass="btn-secondary" onAction="#refreshTable"/>
+        </HBox>
+    </VBox>
+
+</VBox>

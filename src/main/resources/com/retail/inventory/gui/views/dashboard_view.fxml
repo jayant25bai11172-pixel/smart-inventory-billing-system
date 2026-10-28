@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.retail.inventory.gui.controller.DashboardController"
+      spacing="20" style="-fx-background-color: transparent;">
+
+    <!-- KPI Metric Cards Grid -->
+    <GridPane hgap="16" vgap="16">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="25"/>
+        </columnConstraints>
+
+        <!-- KPI 1: Gross Revenue -->
+        <VBox styleClass="kpi-card" GridPane.columnIndex="0" spacing="6">
+            <Label text="TOTAL REVENUE" styleClass="kpi-title"/>
+            <Label fx:id="lblTotalRevenue" text="₹0.00" styleClass="kpi-value"/>
+            <Label text="Lifetime customer billing" styleClass="kpi-subtitle"/>
+        </VBox>
+
+        <!-- KPI 2: Total Invoices -->
+        <VBox styleClass="kpi-card" GridPane.columnIndex="1" spacing="6">
+            <Label text="TOTAL TRANSACTIONS" styleClass="kpi-title"/>
+            <Label fx:id="lblTotalInvoices" text="0" styleClass="kpi-value"/>
+            <Label text="Completed checkout orders" styleClass="kpi-subtitle"/>
+        </VBox>
+
+        <!-- KPI 3: Total Products in Catalog -->
+        <VBox styleClass="kpi-card" GridPane.columnIndex="2" spacing="6">
+            <Label text="CATALOG INVENTORY" styleClass="kpi-title"/>
+            <Label fx:id="lblTotalProducts" text="0" styleClass="kpi-value"/>
+            <Label text="Active SKUs in store" styleClass="kpi-subtitle"/>
+        </VBox>
+
+        <!-- KPI 4: Low Stock Alert Count -->
+        <VBox styleClass="kpi-card" GridPane.columnIndex="3" spacing="6">
+            <Label text="LOW-STOCK BREACHES" styleClass="kpi-title"/>
+            <Label fx:id="lblLowStockBreaches" text="0" styleClass="kpi-value" style="-fx-text-fill: #F59E0B;"/>
+            <Label text="Below safety reorder threshold" styleClass="kpi-subtitle"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Low-Stock Alert Notice Bar (shows when items are low) -->
+    <HBox fx:id="boxAlertBanner" styleClass="alert-banner" spacing="12" alignment="CENTER_LEFT" visible="false" managed="false">
+        <Label text="⚠️" style="-fx-font-size: 16px;"/>
+        <Label fx:id="lblAlertMessage" text="Action Required: Several products have dropped below their safety threshold."
+               styleClass="alert-banner-text" HBox.hgrow="ALWAYS"/>
+        <Button text="Quick Restock" styleClass="btn-secondary" onAction="#handleQuickRestockFromBanner"/>
+    </HBox>
+
+    <!-- Main Dashboard Split View -->
+    <HBox spacing="16" VBox.vgrow="ALWAYS">
+
+        <!-- Left Table: Low-Stock Attention Items -->
+        <VBox styleClass="card" spacing="12" HBox.hgrow="ALWAYS" prefWidth="600">
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <VBox HBox.hgrow="ALWAYS">
+                    <Label text="Stock Health &amp; Reorder Alerts" styleClass="card-header-title"/>
+                    <Label text="Items requiring immediate supplier replenishment" styleClass="card-header-subtitle"/>
+                </VBox>
+                <Button text="🔄 Refresh" styleClass="btn-secondary" onAction="#refreshDashboard"/>
+            </HBox>
+
+            <TableView fx:id="tableLowStock" VBox.vgrow="ALWAYS" prefHeight="260">
+                <columns>
+                    <TableColumn fx:id="colLowId" text="Product ID" prefWidth="90"/>
+                    <TableColumn fx:id="colLowName" text="Product Name" prefWidth="170"/>
+                    <TableColumn fx:id="colLowCategory" text="Category" prefWidth="100"/>
+                    <TableColumn fx:id="colLowStock" text="Current Stock" prefWidth="95"/>
+                    <TableColumn fx:id="colLowThreshold" text="Threshold" prefWidth="85"/>
+                    <TableColumn fx:id="colLowAction" text="Action" prefWidth="100"/>
+                </columns>
+                <placeholder>
+                    <Label text="🎉 All products are well-stocked above thresholds!"/>
+                </placeholder>
+            </TableView>
+        </VBox>
+
+        <!-- Right Side: Recent Invoices & Quick Actions -->
+        <VBox spacing="16" prefWidth="420">
+            <!-- Quick Actions Card -->
+            <VBox styleClass="card" spacing="12">
+                <Label text="Quick Operations" styleClass="card-header-title"/>
+                <HBox spacing="10">
+                    <Button text="🛒 New POS Bill" styleClass="btn-primary" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#handleOpenPos"/>
+                    <Button text="➕ Add Product" styleClass="btn-secondary" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#handleAddProduct"/>
+                </HBox>
+            </VBox>
+
+            <!-- Recent Invoices Card -->
+            <VBox styleClass="card" spacing="12" VBox.vgrow="ALWAYS">
+                <Label text="Recent Transactions" styleClass="card-header-title"/>
+                <Label text="Latest completed customer bills" styleClass="card-header-subtitle"/>
+
+                <TableView fx:id="tableRecentInvoices" VBox.vgrow="ALWAYS" prefHeight="220">
+                    <columns>
+                        <TableColumn fx:id="colRecentInvId" text="Invoice #" prefWidth="130"/>
+                        <TableColumn fx:id="colRecentCustomer" text="Customer" prefWidth="120"/>
+                        <TableColumn fx:id="colRecentTotal" text="Amount" prefWidth="90"/>
+                        <TableColumn fx:id="colRecentMode" text="Payment" prefWidth="80"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="No invoices generated yet."/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+        </VBox>
+    </HBox>
+
+</VBox>

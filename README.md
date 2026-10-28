@@ -1,11 +1,12 @@
-# Smart Inventory & Billing Manager for Retail
+# Smart Retail - Inventory & Billing Manager
 
+![Version](https://img.shields.io/badge/Release-v2.0.0-blue.svg)
 ![Java](https://img.shields.io/badge/Language-Java%2021%20LTS-orange.svg)
+![UI](https://img.shields.io/badge/Interface-JavaFX%20Desktop%20GUI-brightgreen.svg)
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)
 ![Tests](https://img.shields.io/badge/Tests-9%2F9%20Passed%20(100%25)-success.svg)
-![License](https://img.shields.io/badge/Academic-VITyarthi%20Project-blue.svg)
 
-An enterprise-grade, standalone Java retail management system designed for small to medium retail businesses. It provides real-time stock tracking, atomic Point-of-Sale (POS) customer billing with multi-channel payment options, automated low-stock alerting powered by background multithreading, and business intelligence reporting leveraging Java 8+ Streams.
+An enterprise-grade, standalone Java retail management system designed for retail storefronts and supermarket operations. It provides an all-white modern desktop GUI, real-time stock tracking, atomic Point-of-Sale (POS) customer billing with multi-channel payment options (Cash, Card, UPI), automated low-stock alerting powered by background multithreading, and business intelligence reporting leveraging Java 8+ Streams.
 
 ---
 

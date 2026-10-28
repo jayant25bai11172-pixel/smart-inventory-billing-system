@@ -65,7 +65,7 @@ public class InventoryApp extends Application {
         String cssPath = getClass().getResource("/com/retail/inventory/gui/css/styles.css").toExternalForm();
         scene.getStylesheets().add(cssPath);
 
-        primaryStage.setTitle("SmartRetail Pro - Inventory & POS Billing Suite");
+        primaryStage.setTitle("Smart Retail - Inventory & POS Billing Suite");
         primaryStage.setMinWidth(1080);
         primaryStage.setMinHeight(680);
         primaryStage.setScene(scene);

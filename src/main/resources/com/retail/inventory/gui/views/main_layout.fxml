@@ -15,7 +15,7 @@
             <!-- Brand -->
             <VBox styleClass="brand-container" spacing="4">
                 <HBox alignment="CENTER_LEFT" spacing="8">
-                    <Label text="SmartRetail" styleClass="brand-title"/>
+                    <Label text="Smart Retail" styleClass="brand-title"/>
                     <Label text="PRO" styleClass="brand-badge"/>
                 </HBox>
                 <Label text="Retail POS &amp; Inventory Suite" styleClass="brand-subtitle"/>

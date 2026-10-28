@@ -132,7 +132,7 @@ public class ReceiptDialog {
 
         Separator sep4 = new Separator();
 
-        Label footer = new Label("Thank you for shopping with SmartRetail!\nPlease visit again.");
+        Label footer = new Label("Thank you for shopping with Smart Retail!\nPlease visit again.");
         footer.setStyle("-fx-font-size: 11px; -fx-text-fill: #94A3B8; -fx-alignment: center;");
         footer.setMaxWidth(Double.MAX_VALUE);
         footer.setAlignment(Pos.CENTER);

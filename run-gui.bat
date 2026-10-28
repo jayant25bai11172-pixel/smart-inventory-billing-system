@@ -16,6 +16,6 @@ if not exist "%PROJECT_DIR%bin\com\retail\inventory\gui\GuiLauncher.class" (
 
 cd /d "%PROJECT_DIR%"
 echo ========================================================
-echo   Starting SmartRetail Modern Desktop Application
+echo   Starting Smart Retail Modern Desktop Application
 echo ========================================================
 "%JAVA_CMD%" --module-path "%PROJECT_DIR%lib\javafx" --add-modules javafx.controls,javafx.fxml -cp "bin;lib\javafx\*" com.retail.inventory.gui.GuiLauncher %*

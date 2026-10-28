@@ -39,7 +39,7 @@ public class DashboardController {
     @FXML private TableColumn<Product, String> colLowCategory;
     @FXML private TableColumn<Product, String> colLowStock;
     @FXML private TableColumn<Product, String> colLowThreshold;
-    @FXML private TableColumn<Product, Void> colLowAction;
+    @FXML private TableColumn<Product, Product> colLowAction;
 
     @FXML private TableView<Invoice> tableRecentInvoices;
     @FXML private TableColumn<Invoice, String> colRecentInvId;
@@ -73,23 +73,21 @@ public class DashboardController {
         colLowStock.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStockQuantity() + " units"));
         colLowThreshold.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLowStockThreshold() + " units"));
 
+        colLowAction.setCellValueFactory(cellData -> new javafx.beans.property.ReadOnlyObjectWrapper<>(cellData.getValue()));
         colLowAction.setCellFactory(param -> new TableCell<>() {
             private final Button restockBtn = new Button("Restock");
             {
                 restockBtn.getStyleClass().add("btn-secondary");
                 restockBtn.setStyle("-fx-font-size: 11px; -fx-padding: 4 8 4 8;");
-                restockBtn.setOnAction(event -> {
-                    Product product = getTableView().getItems().get(getIndex());
-                    promptRestock(product);
-                });
             }
 
             @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
+            protected void updateItem(Product product, boolean empty) {
+                super.updateItem(product, empty);
+                if (empty || product == null) {
                     setGraphic(null);
                 } else {
+                    restockBtn.setOnAction(event -> promptRestock(product));
                     setGraphic(restockBtn);
                 }
             }

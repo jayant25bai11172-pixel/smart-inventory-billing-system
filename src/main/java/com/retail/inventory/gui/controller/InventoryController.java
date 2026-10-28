@@ -6,6 +6,7 @@ import com.retail.inventory.gui.util.AlertHelper;
 import com.retail.inventory.gui.util.CurrencyFormatter;
 import com.retail.inventory.model.Product;
 import com.retail.inventory.service.InventoryService;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -31,7 +32,7 @@ public class InventoryController {
     @FXML private TableColumn<Product, String> colPrice;
     @FXML private TableColumn<Product, String> colStock;
     @FXML private TableColumn<Product, String> colThreshold;
-    @FXML private TableColumn<Product, Void> colStatus;
+    @FXML private TableColumn<Product, Product> colStatus;
     @FXML private TableColumn<Product, String> colTotalVal;
 
     @FXML private Label lblInventoryCount;
@@ -40,23 +41,39 @@ public class InventoryController {
 
     private MainController mainController;
     private InventoryService inventoryService;
+    private boolean isUpdatingFilters = false;
 
     public void init(MainController mainController, InventoryService inventoryService) {
         this.mainController = mainController;
         this.inventoryService = inventoryService;
 
-        setupFilters();
         setupTable();
+        setupFilters();
+        updateCategoryOptions();
         refreshTable();
     }
 
     private void setupFilters() {
-        cbStatusFilter.getItems().addAll("All Statuses", "In Stock", "Low Stock", "Out of Stock");
+        cbStatusFilter.getItems().setAll("All Statuses", "In Stock", "Low Stock", "Out of Stock");
         cbStatusFilter.setValue("All Statuses");
 
-        cbStatusFilter.valueProperty().addListener((obs, oldVal, newVal) -> refreshTable());
-        cbCategoryFilter.valueProperty().addListener((obs, oldVal, newVal) -> refreshTable());
-        txtSearch.textProperty().addListener((obs, oldVal, newVal) -> refreshTable());
+        cbStatusFilter.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isUpdatingFilters) {
+                refreshTable();
+            }
+        });
+
+        cbCategoryFilter.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isUpdatingFilters) {
+                refreshTable();
+            }
+        });
+
+        txtSearch.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isUpdatingFilters) {
+                refreshTable();
+            }
+        });
     }
 
     private void setupTable() {
@@ -71,6 +88,8 @@ public class InventoryController {
             return new SimpleStringProperty(CurrencyFormatter.format(total));
         });
 
+        // Use ReadOnlyObjectWrapper for safe, reliable status badge rendering
+        colStatus.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue()));
         colStatus.setCellFactory(param -> new TableCell<>() {
             private final Label badge = new Label();
             {
@@ -78,12 +97,11 @@ public class InventoryController {
             }
 
             @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
+            protected void updateItem(Product product, boolean empty) {
+                super.updateItem(product, empty);
+                if (empty || product == null) {
                     setGraphic(null);
                 } else {
-                    Product product = getTableView().getItems().get(getIndex());
                     int stock = product.getStockQuantity();
                     int threshold = product.getLowStockThreshold();
 
@@ -102,34 +120,53 @@ public class InventoryController {
                 }
             }
         });
+
+        // Double click row to edit
+        tableInventory.setRowFactory(tv -> {
+            TableRow<Product> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    editProduct(row.getItem());
+                }
+            });
+            return row;
+        });
+    }
+
+    private void updateCategoryOptions() {
+        if (inventoryService == null) return;
+        isUpdatingFilters = true;
+        try {
+            String current = cbCategoryFilter.getValue();
+            List<String> categories = new ArrayList<>();
+            categories.add("All Categories");
+            inventoryService.getAllProducts().stream()
+                    .map(Product::getCategory)
+                    .distinct()
+                    .sorted()
+                    .forEach(categories::add);
+
+            cbCategoryFilter.getItems().setAll(categories);
+            if (current != null && categories.contains(current)) {
+                cbCategoryFilter.setValue(current);
+            } else {
+                cbCategoryFilter.setValue("All Categories");
+            }
+        } finally {
+            isUpdatingFilters = false;
+        }
     }
 
     public void refreshTable() {
         if (inventoryService == null) return;
 
-        // Populate category dropdown dynamically
-        List<String> categories = new ArrayList<>();
-        categories.add("All Categories");
-        inventoryService.getAllProducts().stream()
-                .map(Product::getCategory)
-                .distinct()
-                .sorted()
-                .forEach(categories::add);
-
-        String currentCat = cbCategoryFilter.getValue();
-        cbCategoryFilter.getItems().setAll(categories);
-        if (categories.contains(currentCat)) {
-            cbCategoryFilter.setValue(currentCat);
-        } else {
-            cbCategoryFilter.setValue("All Categories");
-        }
-
-        // Filtering
+        // Safely check filter values
         String search = txtSearch.getText() != null ? txtSearch.getText().trim().toLowerCase() : "";
         String cat = cbCategoryFilter.getValue() != null ? cbCategoryFilter.getValue() : "All Categories";
         String status = cbStatusFilter.getValue() != null ? cbStatusFilter.getValue() : "All Statuses";
 
-        List<Product> filtered = inventoryService.getAllProducts().stream()
+        List<Product> all = inventoryService.getAllProducts();
+        List<Product> filtered = all.stream()
                 .filter(p -> {
                     if (search.isEmpty()) return true;
                     return p.getId().toLowerCase().contains(search) || p.getName().toLowerCase().contains(search);
@@ -149,9 +186,9 @@ public class InventoryController {
 
         tableInventory.setItems(FXCollections.observableArrayList(filtered));
 
-        // Update footer counters
-        int totalProducts = inventoryService.getAllProducts().size();
-        double totalValuation = inventoryService.getAllProducts().stream()
+        // Update footer summary
+        int totalProducts = all.size();
+        double totalValuation = all.stream()
                 .mapToDouble(p -> p.getPrice() * p.getStockQuantity())
                 .sum();
         int lowStockCount = inventoryService.getLowStockProducts().size();
@@ -167,6 +204,7 @@ public class InventoryController {
         if (res != null) {
             try {
                 inventoryService.addProduct(res.id, res.name, res.category, res.price, res.stock, res.threshold);
+                updateCategoryOptions();
                 mainController.onDataChanged();
                 AlertHelper.showInfo(tableInventory.getScene().getWindow(), "Success", "Product Added",
                         "Product '" + res.name + "' (" + res.id + ") was registered.");
@@ -204,7 +242,10 @@ public class InventoryController {
             AlertHelper.showWarning(tableInventory.getScene().getWindow(), "Selection Required", "No Product Selected", "Please select a product to edit.");
             return;
         }
+        editProduct(selected);
+    }
 
+    private void editProduct(Product selected) {
         ProductDialog.ProductResult res = ProductDialog.show(tableInventory.getScene().getWindow(), selected);
         if (res != null) {
             try {
@@ -239,6 +280,7 @@ public class InventoryController {
         if (confirmed) {
             try {
                 inventoryService.deleteProduct(selected.getId());
+                updateCategoryOptions();
                 mainController.onDataChanged();
                 AlertHelper.showInfo(tableInventory.getScene().getWindow(), "Deleted", "Product Removed",
                         "Successfully deleted product from catalog.");

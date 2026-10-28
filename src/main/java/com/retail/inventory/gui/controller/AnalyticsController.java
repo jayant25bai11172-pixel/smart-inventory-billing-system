@@ -42,7 +42,7 @@ public class AnalyticsController {
     @FXML private TableColumn<Invoice, String> colInvQty;
     @FXML private TableColumn<Invoice, String> colInvTotal;
     @FXML private TableColumn<Invoice, String> colInvPayment;
-    @FXML private TableColumn<Invoice, Void> colInvAction;
+    @FXML private TableColumn<Invoice, Invoice> colInvAction;
 
     private MainController mainController;
     private AnalyticsService analyticsService;
@@ -68,23 +68,21 @@ public class AnalyticsController {
         colInvTotal.setCellValueFactory(c -> new SimpleStringProperty(CurrencyFormatter.format(c.getValue().getFinalTotal())));
         colInvPayment.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPaymentDetails().getPaymentMode()));
 
+        colInvAction.setCellValueFactory(c -> new javafx.beans.property.ReadOnlyObjectWrapper<>(c.getValue()));
         colInvAction.setCellFactory(param -> new TableCell<>() {
             private final Button btn = new Button("View");
             {
                 btn.getStyleClass().add("btn-secondary");
                 btn.setStyle("-fx-font-size: 11px; -fx-padding: 3 8 3 8;");
-                btn.setOnAction(e -> {
-                    Invoice inv = getTableView().getItems().get(getIndex());
-                    ReceiptDialog.show(tableInvoices.getScene().getWindow(), inv);
-                });
             }
 
             @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
+            protected void updateItem(Invoice inv, boolean empty) {
+                super.updateItem(inv, empty);
+                if (empty || inv == null) {
                     setGraphic(null);
                 } else {
+                    btn.setOnAction(e -> ReceiptDialog.show(tableInvoices.getScene().getWindow(), inv));
                     setGraphic(btn);
                 }
             }

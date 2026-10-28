@@ -38,15 +38,15 @@ public class PosController {
     @FXML private TableColumn<Product, String> colCatalogCategory;
     @FXML private TableColumn<Product, String> colCatalogPrice;
     @FXML private TableColumn<Product, String> colCatalogStock;
-    @FXML private TableColumn<Product, Void> colCatalogAction;
+    @FXML private TableColumn<Product, Product> colCatalogAction;
 
     @FXML private Label lblCartItemCount;
     @FXML private TableView<CartItem> tableCart;
     @FXML private TableColumn<CartItem, String> colCartItemName;
     @FXML private TableColumn<CartItem, String> colCartItemPrice;
-    @FXML private TableColumn<CartItem, Void> colCartItemQty;
+    @FXML private TableColumn<CartItem, CartItem> colCartItemQty;
     @FXML private TableColumn<CartItem, String> colCartItemSubtotal;
-    @FXML private TableColumn<CartItem, Void> colCartItemRemove;
+    @FXML private TableColumn<CartItem, CartItem> colCartItemRemove;
 
     @FXML private TextField txtCustomerName;
     @FXML private TextField txtCustomerPhone;
@@ -109,25 +109,22 @@ public class PosController {
             return new SimpleStringProperty(stock > 0 ? stock + " units" : "Out of Stock");
         });
 
+        colCatalogAction.setCellValueFactory(c -> new javafx.beans.property.ReadOnlyObjectWrapper<>(c.getValue()));
         colCatalogAction.setCellFactory(param -> new TableCell<>() {
             private final Button addBtn = new Button("+ Add");
             {
                 addBtn.getStyleClass().add("btn-primary");
                 addBtn.setStyle("-fx-font-size: 11px; -fx-padding: 3 8 3 8;");
-                addBtn.setOnAction(event -> {
-                    Product product = getTableView().getItems().get(getIndex());
-                    addToCart(product, 1);
-                });
             }
 
             @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
+            protected void updateItem(Product product, boolean empty) {
+                super.updateItem(product, empty);
+                if (empty || product == null) {
                     setGraphic(null);
                 } else {
-                    Product product = getTableView().getItems().get(getIndex());
                     addBtn.setDisable(product.getStockQuantity() <= 0);
+                    addBtn.setOnAction(event -> addToCart(product, 1));
                     setGraphic(addBtn);
                 }
             }
@@ -152,6 +149,7 @@ public class PosController {
         colCartItemSubtotal.setCellValueFactory(c -> new SimpleStringProperty(CurrencyFormatter.format(c.getValue().getSubtotal())));
 
         // Quantity Stepper Cell
+        colCartItemQty.setCellValueFactory(c -> new javafx.beans.property.ReadOnlyObjectWrapper<>(c.getValue()));
         colCartItemQty.setCellFactory(param -> new TableCell<>() {
             private final Button minusBtn = new Button("-");
             private final Label qtyLbl = new Label();
@@ -165,64 +163,62 @@ public class PosController {
                 plusBtn.getStyleClass().add("btn-secondary");
                 plusBtn.setStyle("-fx-font-size: 10px; -fx-padding: 2 6 2 6;");
                 qtyLbl.setStyle("-fx-font-weight: bold; -fx-min-width: 20px; -fx-alignment: center;");
-
-                minusBtn.setOnAction(e -> {
-                    CartItem item = getTableView().getItems().get(getIndex());
-                    if (item.getQuantity() > 1) {
-                        try {
-                            billingService.updateCartItemQuantity(item.getProduct().getId(), item.getQuantity() - 1);
-                            syncCartView();
-                        } catch (Exception ex) {
-                            AlertHelper.showError(tableCart.getScene().getWindow(), "Error", "Quantity Update Failed", ex.getMessage());
-                        }
-                    } else {
-                        billingService.removeItemFromCart(item.getProduct().getId());
-                        syncCartView();
-                    }
-                });
-
-                plusBtn.setOnAction(e -> {
-                    CartItem item = getTableView().getItems().get(getIndex());
-                    try {
-                        billingService.updateCartItemQuantity(item.getProduct().getId(), item.getQuantity() + 1);
-                        syncCartView();
-                    } catch (Exception ex) {
-                        AlertHelper.showWarning(tableCart.getScene().getWindow(), "Stock Limit", "Cannot Add More", ex.getMessage());
-                    }
-                });
             }
 
             @Override
-            protected void updateItem(Void item, boolean empty) {
+            protected void updateItem(CartItem item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
+                if (empty || item == null) {
                     setGraphic(null);
                 } else {
-                    CartItem cartItem = getTableView().getItems().get(getIndex());
-                    qtyLbl.setText(String.valueOf(cartItem.getQuantity()));
+                    qtyLbl.setText(String.valueOf(item.getQuantity()));
+
+                    minusBtn.setOnAction(e -> {
+                        if (item.getQuantity() > 1) {
+                            try {
+                                billingService.updateCartItemQuantity(item.getProduct().getId(), item.getQuantity() - 1);
+                                syncCartView();
+                            } catch (Exception ex) {
+                                AlertHelper.showError(tableCart.getScene().getWindow(), "Error", "Quantity Update Failed", ex.getMessage());
+                            }
+                        } else {
+                            billingService.removeItemFromCart(item.getProduct().getId());
+                            syncCartView();
+                        }
+                    });
+
+                    plusBtn.setOnAction(e -> {
+                        try {
+                            billingService.updateCartItemQuantity(item.getProduct().getId(), item.getQuantity() + 1);
+                            syncCartView();
+                        } catch (Exception ex) {
+                            AlertHelper.showWarning(tableCart.getScene().getWindow(), "Stock Limit", "Cannot Add More", ex.getMessage());
+                        }
+                    });
+
                     setGraphic(box);
                 }
             }
         });
 
         // Remove item cell
+        colCartItemRemove.setCellValueFactory(c -> new javafx.beans.property.ReadOnlyObjectWrapper<>(c.getValue()));
         colCartItemRemove.setCellFactory(param -> new TableCell<>() {
             private final Button remBtn = new Button("✕");
             {
                 remBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #EF4444; -fx-font-weight: bold; -fx-cursor: hand;");
-                remBtn.setOnAction(e -> {
-                    CartItem item = getTableView().getItems().get(getIndex());
-                    billingService.removeItemFromCart(item.getProduct().getId());
-                    syncCartView();
-                });
             }
 
             @Override
-            protected void updateItem(Void item, boolean empty) {
+            protected void updateItem(CartItem item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
+                if (empty || item == null) {
                     setGraphic(null);
                 } else {
+                    remBtn.setOnAction(e -> {
+                        billingService.removeItemFromCart(item.getProduct().getId());
+                        syncCartView();
+                    });
                     setGraphic(remBtn);
                 }
             }

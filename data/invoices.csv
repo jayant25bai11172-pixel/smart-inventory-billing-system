@@ -1,1 +1,2 @@
 # InvoiceID,DateTime,CustomerName,CustomerPhone,TotalQty,Subtotal,Discount,Tax,FinalTotal,PaymentDetails,Items
+INV-20261029-0001,2026-10-29 03:40:32,jayant,9999999999,5,1058.00,105.80,47.61,999.81,CASH;999.81;CASH-7A4D5623 (Tendered: Rs.1000.00, Change: Rs.0.19);2026-10-29 03:40:32;SUCCESS,PRD-101#Basmati Rice 5kg#Groceries#450.0#1|PRD-102#Whole Wheat Flour 5kg#Groceries#280.0#1|PRD-103#Sunflower Oil 1L#Groceries#145.0#1|PRD-104#Full Cream Milk 1L#Dairy#68.0#1|PRD-105#Farm Fresh Butter 200g#Dairy#115.0#1

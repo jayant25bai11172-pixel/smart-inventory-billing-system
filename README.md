@@ -1,260 +1,189 @@
 # Smart Retail - Inventory & Billing Manager
 
-![Version](https://img.shields.io/badge/Release-v1.0.0-blue.svg)
-![Java](https://img.shields.io/badge/Language-Java%2021%20LTS-orange.svg)
-![UI](https://img.shields.io/badge/Interface-JavaFX%20Desktop%20GUI-brightgreen.svg)
+![Release](https://img.shields.io/badge/Release-v1.0.0-blue.svg)
+![Language](https://img.shields.io/badge/Language-Java%2021%20LTS-orange.svg)
+![Interface](https://img.shields.io/badge/Interface-JavaFX%20Desktop%20GUI-brightgreen.svg)
+![Theme](https://img.shields.io/badge/Design-All--White%20Modern%20Light-blue.svg)
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)
 ![Tests](https://img.shields.io/badge/Tests-9%2F9%20Passed%20(100%25)-success.svg)
 
-An enterprise-grade, standalone Java retail management system designed for retail storefronts and supermarket operations. It provides an all-white modern desktop GUI, real-time stock tracking, atomic Point-of-Sale (POS) customer billing with multi-channel payment options (Cash, Card, UPI), automated low-stock alerting powered by background multithreading, and business intelligence reporting leveraging Java 8+ Streams.
-
----
-
-
+An enterprise-grade, standalone retail management and Point-of-Sale (POS) application built in Java 21 LTS. Featuring an all-white modern desktop GUI, real-time stock tracking, atomic customer checkout with multi-channel payment settlements (Cash, Card, UPI), automated low-stock alerting powered by background multithreading, and business intelligence reporting leveraging Java 8+ Streams.
 
 ---
 
 ## 1. Overview
-Managing a retail storefront requires synchronization between store shelves, customer billing registers, cash/digital accounts, and inventory supplier orders. Traditional paper registers or disconnected spreadsheet trackers lead to stock discrepancies, cashier overbilling, and stockouts.
+Managing a retail storefront requires real-time synchronization between store inventory, customer checkout counters, payment logs, and supplier replenishment notices. Traditional spreadsheets or paper ledgers introduce stock discrepancies, delays, and out-of-stock scenarios.
 
-The **Smart Inventory & Billing Manager** resolves these operational challenges by offering an all-in-one console application structured across three primary functional modules:
-1. **Product Catalog & Inventory Tracking**: Centralized catalog maintaining pricing, inventory counts, safety alert thresholds, and category classifications.
-2. **Point of Sale (POS) & Billing**: Dynamic cart management supporting discounts, GST tax computation, stock verification, and polymorphic payments (Cash, Card, UPI).
-3. **Sales Analytics & Reporting**: Real-time business reporting including gross revenue, top-selling items, category share, and low-stock reorder notices.
+**Smart Retail** delivers an all-in-one software suite featuring both a **Modern JavaFX Desktop Interface** and an interactive **Console Terminal Mode**:
+1. **Executive Dashboard**: Live store health KPIs, daily sales metrics, and urgent low-stock alerts.
+2. **Point of Sale (POS) & Billing**: Searchable catalog, dynamic cart management with quantity steppers, GST (5%) & discount computation, and multi-channel payments (Cash, Card, UPI) with printable thermal receipts.
+3. **Product Catalog & Inventory Management**: Centralized inventory tracking with stock status badges (In Stock, Low Stock, Out of Stock), category filters, restock modals, price adjustments, and warehouse asset valuation.
+4. **Sales Analytics & Business Intelligence**: Interactive JavaFX bar charts of best-sellers, category revenue share pie charts, and complete transaction audit ledger.
 
 ---
 
 ## 2. Key Features
 
-- **Real-Time Stock Depletion & Restoration**: Stock adjustments occur atomically upon checkout or supplier replenishment with thread-safe synchronization.
-- **Over-Purchase Prevention**: Real-time stock reservation prevents cashiers from selling items beyond available inventory via custom checked exceptions.
-- **Multi-Method Payment Settlement**:
-  - **Cash**: Computes cash tendered, change due, and validates tender sufficiency.
-  - **Card**: Validates 16-digit card numbers, masks numbers (`****-****-****-1234`), and generates approval authorization codes.
-  - **UPI**: Validates Virtual Payment Addresses (e.g. `retail@okhdfcbank`) and logs unique digital transaction references.
-- **Background Multithreaded Low-Stock Monitor**: An autonomous daemon thread runs periodic stock health checks every few seconds and triggers non-blocking safety alerts.
-- **Rich Business Analytics**: Powered by Java Stream and Collectors API for calculating Average Order Value (AOV), best-sellers, and category sales shares.
-- **Zero-Dependency Persistence**: Data is safely stored in CSV flat files (`data/products.csv` and `data/invoices.csv`) with automatic directory initialization.
+- **All-White Clean Design System**: Modern, high-contrast light theme with clean typography, rounded cards, subtle shadows, and responsive layout containers.
+- **Point of Sale (POS) Counter**:
+  - Instant product search by ID or name with category filter chips.
+  - Interactive cart table with inline quantity adjustment (`+` / `-`) and item removal.
+  - Automatic computation of subtotal, customizable discount %, GST tax, and grand total.
+  - Printable thermal tax receipt popup with a 1-click clipboard copy feature.
+- **Polymorphic Payment Processing**:
+  - **Cash**: Real-time cash tendered input and change-due calculator.
+  - **Card**: 16-digit card number validation, number masking (`****-****-****-1234`), and authorization code generation.
+  - **UPI**: Virtual Payment Address (VPA) validation with unique transaction reference IDs.
+- **Background Multithreaded Low-Stock Monitor**:
+  - Autonomous daemon thread (`LowStockMonitorService`) continuously scanning inventory levels every 5 seconds.
+  - Non-blocking event dispatching via `Platform.runLater()` updating sidebar notification badges and alert banners in real time.
+- **Warehouse Asset Valuation & Restocking**:
+  - Filterable by text query, Category, and Stock Status.
+  - 1-click modal replenishment to easily add stock for low-inventory items.
+  - Live total valuation (`Sum(Price * Stock)`) for inventory audits.
+- **Business Intelligence & Stream Analytics**:
+  - Java 8+ Streams and Collectors aggregating gross revenue, average order value (AOV), top products, and category breakdowns.
+- **Zero-Dependency Flat-File Persistence**:
+  - Catalog and transaction history are automatically persisted to CSV flat files (`data/products.csv` and `data/invoices.csv`).
 
 ---
 
-## 3. Core Java Concepts Highlighted
+## 3. Core Java Architecture & Concepts Highlighted
 
 | Concept | Implementation Details |
 | :--- | :--- |
-| **Interfaces & Polymorphism** | `PaymentMethod` interface with concrete implementations: `CashPayment`, `CardPayment`, and `UpiPayment`. The checkout engine delegates payment execution polymorphically. |
-| **Custom Exception Handling** | Hierarchical checked exception structure rooted at `SmartInventoryException`: `InsufficientStockException`, `ProductNotFoundException`, `InvalidInputException`, and `PaymentFailedException`. |
-| **Multithreading & Concurrency** | `LowStockMonitorService` utilizes a `ScheduledExecutorService` with daemon worker threads (`Thread.setDaemon(true)`), running scheduled background tasks and synchronizing against `Product` stock monitors. |
-| **Collections Framework** | `Map<String, Product>`, `CopyOnWriteArrayList`, `ConcurrentHashMap`, `LinkedHashMap`, `Set<String>`, and `List<CartItem>`. |
-| **Java 8+ Streams & Lambdas** | Used in `AnalyticsService` for aggregating total revenue, sorting top products by units/revenue, and computing category breakdowns with `Collectors.groupingBy()`. |
+| **JavaFX Desktop GUI & MVC** | Decoupled architecture using FXML view templates, CSS styling, and controllers (`MainController`, `DashboardController`, `PosController`, `InventoryController`, `AnalyticsController`). |
+| **Interfaces & Polymorphism** | `PaymentMethod` interface with concrete implementations: `CashPayment`, `CardPayment`, and `UpiPayment`. The checkout service processes payments polymorphically. |
+| **Custom Exception Handling** | Hierarchical checked exception architecture rooted at `SmartInventoryException`: `InsufficientStockException`, `ProductNotFoundException`, `InvalidInputException`, and `PaymentFailedException`. |
+| **Multithreading & Daemon Threads** | `LowStockMonitorService` utilizes a `ScheduledExecutorService` with daemon threads (`Thread.setDaemon(true)`), running periodic checks and triggering listener callbacks on the JavaFX thread. |
+| **Java 8+ Streams & Lambdas** | `AnalyticsService` computes total revenue, sorts top products by revenue/volume, and calculates category distributions using `Collectors.groupingBy()`. |
 | **Thread Synchronization & Locks** | `ReentrantReadWriteLock` in repositories ensuring thread-safe reads and atomic writes during concurrent operations. |
-| **File I/O & Serialization** | Robust CSV parsing and serialization preserving business state across restarts. |
+| **File I/O & CSV Serialization** | Robust CSV parsing and serialization preserving business state across application restarts with zero external database dependencies. |
 
 ---
 
-## 4. Architecture & Project Structure
+## 4. Project Structure
 
 ```
 smart-inventory-billing-manager/
 ├── bin/                                       # Compiled bytecode (.class files)
-├── data/                                      # Persistent CSV data storage
+├── data/                                      # Persistent CSV storage
 │   ├── products.csv                           # Product catalog and stock data
-│   └── invoices.csv                           # Historical customer billing audit trail
+│   └── invoices.csv                           # Customer invoices & transaction audit trail
+├── lib/
+│   └── javafx/                                # OpenJFX 21 runtime libraries
 ├── src/
-│   ├── main/java/com/retail/inventory/
-│   │   ├── Main.java                          # Application entry point & thread lifecycle
-│   │   ├── model/
-│   │   │   ├── Product.java                   # Product entity (ID, name, price, stock, threshold)
-│   │   │   ├── CartItem.java                  # Cart line item snapshot
-│   │   │   ├── Cart.java                      # Cart operations, subtotal, and discount logic
-│   │   │   ├── Invoice.java                   # Complete billing record & CSV serializer
-│   │   │   └── PaymentDetails.java            # Transaction payment metadata
-│   │   ├── payment/
-│   │   │   ├── PaymentMethod.java             # Interface for payment processing
-│   │   │   ├── CashPayment.java               # Cash tender and change calculation
-│   │   │   ├── CardPayment.java               # Card validation and masking
-│   │   │   └── UpiPayment.java                # UPI VPA validation and transaction generation
-│   │   ├── exception/
-│   │   │   ├── SmartInventoryException.java   # Root checked exception
-│   │   │   ├── InsufficientStockException.java# Triggered on overselling
-│   │   │   ├── ProductNotFoundException.java  # Triggered on missing SKU
-│   │   │   ├── InvalidInputException.java     # User validation errors
-│   │   │   └── PaymentFailedException.java    # Payment failure errors
-│   │   ├── repository/
-│   │   │   ├── ProductRepository.java         # Thread-safe CSV catalog persistence
-│   │   │   └── InvoiceRepository.java         # Append-only CSV invoice persistence
-│   │   ├── service/
-│   │   │   ├── InventoryService.java          # Catalog operations and stock adjustments
-│   │   │   ├── BillingService.java            # POS checkout and tax computation
-│   │   │   ├── AnalyticsService.java          # Stream analytics & BI calculations
-│   │   │   └── LowStockMonitorService.java    # Background multithreaded daemon monitor
-│   │   ├── util/
-│   │   │   ├── ConsoleUtils.java              # ANSI colors, formatted banners, and input validators
-│   │   │   └── TableFormatter.java            # Structured ASCII table renderer
-│   │   └── ui/
-│   │       └── ConsoleUI.java                 # Interactive text-based menu interface
+│   ├── main/
+│   │   ├── java/com/retail/inventory/
+│   │   │   ├── Main.java                      # Console application entry point
+│   │   │   ├── gui/
+│   │   │   │   ├── GuiLauncher.java           # GUI application launcher
+│   │   │   │   ├── InventoryApp.java          # JavaFX Application lifecycle
+│   │   │   │   ├── controller/
+│   │   │   │   │   ├── MainController.java        # Shell navigation & header coordinator
+│   │   │   │   │   ├── DashboardController.java   # KPI cards & quick restock alerts
+│   │   │   │   │   ├── PosController.java         # Point of Sale billing & cart engine
+│   │   │   │   │   ├── InventoryController.java   # SKU management, filters, and modals
+│   │   │   │   │   └── AnalyticsController.java   # BI charts & invoice audit ledger
+│   │   │   │   ├── dialog/
+│   │   │   │   │   ├── ProductDialog.java         # Add/Edit product modal
+│   │   │   │   │   ├── ReceiptDialog.java         # Thermal receipt modal & copy utility
+│   │   │   │   │   └── RestockDialog.java         # Stock replenishment dialog
+│   │   │   │   └── util/
+│   │   │   │       ├── AlertHelper.java           # Standardized dialog helper
+│   │   │   │       └── CurrencyFormatter.java     # Indian Rupee (₹) number formatting
+│   │   │   ├── model/
+│   │   │   │   ├── Product.java               # Product entity (ID, name, price, stock, threshold)
+│   │   │   │   ├── CartItem.java              # Cart line item snapshot
+│   │   │   │   ├── Cart.java                  # Cart operations, subtotal, and discount logic
+│   │   │   │   ├── Invoice.java               # Complete billing record & CSV serializer
+│   │   │   │   └── PaymentDetails.java        # Transaction payment metadata
+│   │   │   ├── payment/
+│   │   │   │   ├── PaymentMethod.java         # Payment processor interface
+│   │   │   │   ├── CashPayment.java           # Cash tender & change calculator
+│   │   │   │   ├── CardPayment.java           # 16-digit card validation & masking
+│   │   │   │   └── UpiPayment.java            # UPI VPA validation & transaction generation
+│   │   │   ├── exception/
+│   │   │   │   ├── SmartInventoryException.java
+│   │   │   │   ├── InsufficientStockException.java
+│   │   │   │   ├── ProductNotFoundException.java
+│   │   │   │   ├── InvalidInputException.java
+│   │   │   │   └── PaymentFailedException.java
+│   │   │   ├── repository/
+│   │   │   │   ├── ProductRepository.java     # Thread-safe product catalog persistence
+│   │   │   │   └── InvoiceRepository.java     # Append-only invoice persistence
+│   │   │   ├── service/
+│   │   │   │   ├── InventoryService.java      # Catalog operations & stock adjustments
+│   │   │   │   ├── BillingService.java        # POS checkout & tax computations
+│   │   │   │   ├── AnalyticsService.java      # Stream analytics & BI calculations
+│   │   │   │   └── LowStockMonitorService.java# Background multithreaded daemon monitor
+│   │   │   ├── util/
+│   │   │   │   ├── ConsoleUtils.java          # CLI formatting & input helpers
+│   │   │   │   └── TableFormatter.java        # Structured ASCII table renderer
+│   │   │   └── ui/
+│   │   │       └── ConsoleUI.java             # Terminal menu interface
+│   │   └── resources/com/retail/inventory/gui/
+│   │       ├── css/
+│   │       │   └── styles.css                 # All-white modern design system
+│   │       └── views/
+│   │           ├── main_layout.fxml           # Master shell layout & sidebar
+│   │           ├── dashboard_view.fxml        # Dashboard view template
+│   │           ├── pos_view.fxml              # POS Billing view template
+│   │           ├── inventory_view.fxml        # Inventory catalog view template
+│   │           └── analytics_view.fxml        # Analytics & charts view template
 │   └── test/java/com/retail/inventory/
-│       └── SmartInventoryTestSuite.java       # Standalone automated unit & integration test runner
-├── build.bat                                  # Windows compilation script
-├── run.bat                                    # Windows application launch script
-├── test.bat                                   # Windows automated test runner script
-├── statement.md                               # Project scope, problem statement, and features
-├── PROJECT_REPORT.md                          # Comprehensive academic report (15 sections + diagrams)
+│       └── SmartInventoryTestSuite.java       # Standalone automated test suite (9 tests)
+├── build.bat                                  # Windows compilation script (auto-fetches OpenJFX)
+├── run.bat                                    # Interactive launcher (defaults to GUI)
+├── run-gui.bat                                # Direct GUI launcher
+├── run-console.bat                            # Direct CLI console launcher
+├── test.bat                                   # Automated test suite runner
+├── PROJECT_REPORT.md                          # Comprehensive academic report
 └── README.md                                  # Repository documentation
 ```
 
 ---
 
-## 5. Prerequisites & Installation
+## 5. Getting Started (Windows)
 
-### Requirements
-- **Operating System**: Microsoft Windows 10 / Windows 11 (64-bit).
-- **Java Development Kit (JDK)**: JDK 17 or JDK 21+ (configured in `PATH` or `JAVA_HOME`).
+### Prerequisites
+- **Operating System**: Windows 10 / Windows 11 (64-bit)
+- **Java**: Java 17 LTS or Java 21 LTS installed and available on `PATH`
 
-### Setup
-Navigate to the project directory in Command Prompt or PowerShell:
+### 1. Compile the Project
+Run the automated build script (will automatically download required OpenJFX 21 binaries if not present):
 ```cmd
-cd C:\Users\jayan\.gemini\antigravity\scratch\smart-inventory-billing-manager
+build.bat
 ```
 
----
-
-## 6. Compilation & Execution (Windows)
-
-The application supports both a **Modern JavaFX Desktop GUI** and the **Classic Terminal Console Mode**.
-
-### Compile the Codebase
-Run the Windows batch build script (automatically fetches OpenJFX libraries if not present and compiles all classes):
-```cmd
-.\build.bat
-```
-
-### Launch the Application
+### 2. Launch the Application
 - **Default Launcher (Interactive Menu)**:
   ```cmd
-  .\run.bat
+  run.bat
   ```
-  *(Launches the Modern JavaFX Desktop GUI by default after 3 seconds, or press `2` for Terminal Console Mode).*
+  *(Launches the Modern JavaFX Desktop GUI automatically after 3 seconds, or press `2` for Terminal Console Mode).*
 
-- **Direct Desktop GUI Launch**:
+- **Direct Modern Desktop GUI Launch**:
   ```cmd
-  .\run-gui.bat
+  run-gui.bat
   ```
 
 - **Direct Classic Console Launch**:
   ```cmd
-  .\run-console.bat
+  run-console.bat
   ```
 
----
-
-### Modern JavaFX Interface Overview
-1. **📊 Executive Dashboard**: High-level store metrics, financial KPIs, low-stock breach warnings, and quick replenishment buttons.
-2. **🛒 POS Billing Register**: Real-time product search, category chips, interactive cart table with quantity steppers, discount calculator, GST tax computation, Cash/Card/UPI payment settlement, and thermal receipt generation.
-3. **📦 Inventory Catalog**: Filterable table by category & stock status (In Stock, Low Stock, Out of Stock), asset valuation footer, product creation, stock restock, price editing, and deletion.
-4. **📈 Analytics & BI**: JavaFX bar charts of top products by revenue/volume, category breakdown pie charts, and full searchable invoice audit ledger with receipt viewing.
-
----
-
-## 7. Testing Instructions
-
-The project comes with a built-in automated test suite covering all functional modules and technical concepts:
-- Product Model, Encapsulation & Stock adjustments
-- Cart Calculations, Discounts & Subtotals
-- `InsufficientStockException` edge cases
-- `CashPayment`, `CardPayment`, and `UpiPayment` validations
-- Atomic Billing Checkout and Inventory Stock Deductions
-- Sales Analytics & Stream Aggregations
-- Multithreaded Low-Stock Background Daemon Alert verification
-
-To execute the test suite:
+### 3. Run Automated Tests
+Execute the comprehensive 9-part unit and integration test suite:
 ```cmd
 test.bat
 ```
-*(Or manually: `java -cp bin com.retail.inventory.SmartInventoryTestSuite`)*
-
-### Test Results Output
-```
-================================================================================
-   SMART INVENTORY & BILLING MANAGER - AUTOMATED TEST SUITE EXECUTION
-================================================================================
-[RUNNING] testProductModelAndStockLogic                 ... PASSED [OK]
-[RUNNING] testCartCalculationsAndDiscounts              ... PASSED [OK]
-[RUNNING] testInsufficientStockExceptionHandling        ... PASSED [OK]
-[RUNNING] testCashPaymentMethod                         ... PASSED [OK]
-[RUNNING] testCardPaymentMethod                         ... PASSED [OK]
-[RUNNING] testUpiPaymentMethod                          ... PASSED [OK]
-[RUNNING] testAtomicBillingCheckoutAndPersistence       ... PASSED [OK]
-[RUNNING] testSalesAnalyticsAggregations                ... PASSED [OK]
-[RUNNING] testMultithreadedLowStockMonitor              ... PASSED [OK]
-
---------------------------------------------------------------------------------
-Test Execution Summary: 9 PASSED, 0 FAILED (Total: 9)
---------------------------------------------------------------------------------
-ALL UNIT AND INTEGRATION TESTS PASSED SUCCESSFULLY! (100% PASS RATE)
-```
 
 ---
 
-## 8. Sample CLI Outputs & Demo Walkthrough
-
-### 1. Main Navigation Menu
-```
-================================================================================
-  SMART INVENTORY & BILLING MANAGER FOR RETAIL
-================================================================================
-  [!] NOTICE: 3 product(s) are currently at or below low-stock threshold! Check Module 4.
-  1. Product Catalog & Inventory Tracking (Module 1)
-  2. Point of Sale & Billing / Cart (Module 2)
-  3. Sales Analytics & Business Reports (Module 3)
-  4. Live Stock Health & Background Daemon Alerts
-  5. Exit System
-
-Enter your selection [1-5]:
-```
-
-### 2. Formatted Product Catalog Table
-```
-+---------+------------------------------+---------------+------------+-------+-----------+-----------+
-| ID      | Product Name                 | Category      | Price      | Stock | Threshold | Status    |
-+---------+------------------------------+---------------+------------+-------+-----------+-----------+
-| PRD-101 | Basmati Rice 5kg             | Groceries     | Rs. 450.00 | 25    | 5         | OPTIMAL   |
-| PRD-105 | Farm Fresh Butter 200g       | Dairy         | Rs. 115.00 | 4     | 5         | LOW STOCK |
-| PRD-108 | Instant Arabica Coffee 100g  | Beverages     | Rs. 320.00 | 3     | 5         | LOW STOCK |
-| PRD-110 | Dark Chocolate Cookie 150g   | Snacks        | Rs. 75.00  | 35    | 10        | OPTIMAL   |
-+---------+------------------------------+---------------+------------+-------+-----------+-----------+
-```
-
-### 3. Generated Tax Invoice & Receipt
-```
-========================================================
-               RETAIL STORE TAX INVOICE                 
-========================================================
- Invoice ID : INV-20260917-0001
- Date & Time: 2026-09-17 17:15:20
- Customer   : Rahul Sharma | Phone: 9876543210
---------------------------------------------------------
-+------------------------------+-----+------------+------------+
-| Item                         | Qty | Rate       | Amount     |
-+------------------------------+-----+------------+------------+
-| Basmati Rice 5kg             | 1   | Rs. 450.00 | Rs. 450.00 |
-| Instant Arabica Coffee 100g  | 2   | Rs. 320.00 | Rs. 640.00 |
-+------------------------------+-----+------------+------------+
- Gross Subtotal :                   Rs. 1090.00
- Discount (10.0%): -                 Rs. 109.00
- GST Tax (5.0%)  : +                  Rs. 49.05
---------------------------------------------------------
- NET TOTAL PAID :                   Rs. 1030.05
- Payment Status : Mode: UPI | Paid: Rs.1030.05 | Ref: VPA: rahul@okhdfcbank / Txn: UPI-849204A91802 | Status: SUCCESS
-========================================================
-```
-
----
-
-## 9. Author & Academic Details
-- **Student Name**: Jayant Yadav
+## 6. Author Details
+- **Developer**: Jayant Yadav
 - **Register Number**: 25BAI11172
-- **Degree & Branch**: B.Tech (CSE / AI & ML)
-- **Institution**: Vellore Institute of Technology (VIT)
+- **Institution**: Vellore Institute of Technology (VIT), Bhopal
+- **Degree & Branch**: B.Tech (Computer Science & Engineering - AI & ML)
 - **Course**: CSE1007 - Programming in Java
-- **Project Title**: Smart Inventory & Billing Manager for Retail
